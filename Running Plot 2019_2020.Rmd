@@ -30,10 +30,6 @@ df <- read_csv("All Running Data.csv")
 df$timeofday <- format(as.POSIXct(df$Date) ,format = "%H:%M:%S") 
 df$Date <- as.Date(df$Date, format = "%m/%d/%y") #already got this one from the answers above
 
-df %>% 
-    rename("avg_hr" = `Avg HR`, "dist" = Distance, "avg_pace" = `Avg Pace`) %>% 
-    colnames()
-
 df$month <- format(df$Date,"%m")
 df$year <- format(df$Date,"%Y")
 df$dayofweek <- wday(df$Date, label=TRUE, abbr=FALSE)
