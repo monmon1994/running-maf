@@ -1,0 +1,80 @@
+---
+title: "Plotting my Running Data"
+author: "Monique"
+date: "15/03/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r set up}
+library(ggplot2)
+library(dplyr)
+library(wesanderson)
+library(patchwork)
+library(readr)
+library(lubridate)
+```
+
+## Loading the data and fixing df
+
+```{r data}
+df <- read_csv("All Running Data.csv")
+
+
+## Data and formatting
+
+df$timeofday <- format(as.POSIXct(df$Date) ,format = "%H:%M:%S") 
+df$Date <- as.Date(df$Date, format = "%m/%d/%y") #already got this one from the answers above
+
+df %>% 
+    rename("avg_hr" = `Avg HR`, "dist" = Distance, "avg_pace" = `Avg Pace`) %>% 
+    colnames()
+
+df$month <- format(df$Date,"%m")
+df$year <- format(df$Date,"%Y")
+df$dayofweek <- wday(df$Date, label=TRUE, abbr=FALSE)
+
+colnames(df)[8] <- "avg_hr"
+colnames(df)[5] <- "dist"
+colnames(df)[13] <- "avg_pace"
+
+# Colors to be used
+
+col_reds <- c("#FF0000", "#F98400")
+
+col_greens <- c("#F2AD00","#0B775E")
+
+col_blues <- c("#46ACC8", "#35274A")
+```
+
+## The plots 
+
+```{r}
+p1 <- ggplot(data = df, aes(x = Date, group = year)) +
+    geom_line(aes(y = avg_hr, color = year)) +
+    scale_colour_manual(values = col_reds) +
+    xlab("") +
+    ylab("Avg Heart Rate during a Run") +
+    theme_bw() 
+
+p2 <- ggplot(data = df, aes(x = Date, group = year)) +
+    geom_line(aes(y = dist, color = year)) +
+    scale_colour_manual(values = col_greens) +
+    xlab("") +
+    ylab("Distance Run") +
+    theme_bw()
+
+p3 <- ggplot(data = df, aes(x = Date, group = year)) +
+    geom_line(aes(y = avg_pace, color = year)) +
+    scale_colour_manual(values = col_blues) +
+    xlab("") +
+    ylab("Avg Pace during Run") +
+    theme_bw()
+
+p1 / p2 / p3  #patch the graphs on top of one another
+
+```
+
