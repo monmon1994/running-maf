@@ -16,6 +16,7 @@ library(wesanderson)
 library(patchwork)
 library(readr)
 library(lubridate)
+library(readr)
 ```
 
 ## Loading the data and fixing df
